@@ -1,0 +1,20 @@
+export const weatherCodes = {
+  0: { condition: "Clear Sky", icon: "☀️", severity: "clear" },
+  1: { condition: "Mainly Clear", icon: "🌤️", severity: "clear" },
+  2: { condition: "Partly Cloudy", icon: "⛅", severity: "cloudy" },
+  3: { condition: "Overcast", icon: "☁️", severity: "cloudy" },
+  45: { condition: "Foggy", icon: "🌫️", severity: "fog" },
+  48: { condition: "Depositing Rime Fog", icon: "🌫️", severity: "fog" },
+  51: { condition: "Light Drizzle", icon: "🌦️", severity: "rain" },
+  53: { condition: "Moderate Drizzle", icon: "🌦️", severity: "rain" },
+  55: { condition: "Dense Drizzle", icon: "🌧️", severity: "rain" },
+  61: { condition: "Slight Rain", icon: "🌧️", severity: "rain" },
+  63: { condition: "Moderate Rain", icon: "🌧️", severity: "rain" },
+  65: { condition: "Heavy Rain", icon: "⛈️", severity: "heavy" },
+  71: { condition: "Slight Snow", icon: "🌨️", severity: "snow" },
+  73: { condition: "Moderate Snow", icon: "❄️", severity: "snow" },
+  75: { condition: "Heavy Snow", icon: "❄️", severity: "snow" },
+  95: { condition: "Thunderstorm", icon: "⛈️", severity: "heavy" },
+  96: { condition: "Thunderstorm + Hail", icon: "⛈️", severity: "heavy" },
+  99: { condition: "Heavy Thunderstorm", icon: "⛈️", severity: "heavy" }
+};

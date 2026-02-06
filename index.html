@@ -22,133 +22,224 @@
       }
     }
   </script>
-  <style>
-    body { box-sizing: border-box; }
-    html, body { height: 100%; }
-    
-    .weather-gradient {
-      background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 50%, #1e1b4b 100%);
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full font-sans">
+  <div id="app" class="h-full overflow-auto weather-gradient text-white transition-all duration-500"><!-- Header -->
+   <header class="sticky top-0 z-50 glass-card border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-4 py-4">
+     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div class="flex items-center gap-3">
+       <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+        </svg>
+       </div>
+       <div>
+        <h1 id="app-title" class="text-lg md:text-xl font-bold bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent">Real-Time Weather India</h1>
+        <div id="live-indicator" class="flex items-center gap-1 text-xs text-green-400"><span class="w-2 h-2 rounded-full bg-green-400 live-pulse"></span> <span>Live</span>
+        </div>
+       </div>
+      </div>
+      <div class="flex items-center gap-3"><button id="theme-toggle" class="p-2 rounded-lg glass-card hover:bg-white/20 transition-colors" title="Toggle theme">
+        <svg id="moon-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0112 21a9.003 9.003 0 008.354-5.646z" />
+        </svg>
+        <svg id="sun-icon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 0 018 0z" />
+        </svg></button>
+      </div>
+     </div><!-- Location Selectors -->
+     <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      <div><label class="block text-xs text-white/60 mb-1">State / Territory</label> <select id="state-select" class="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-400/50"> <option value="">Select State</option> </select>
+      </div>
+      <div><label class="block text-xs text-white/60 mb-1">District</label> <select id="district-select" class="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-400/50 disabled:opacity-50"> <option value="">Select District</option> </select>
+      </div>
+      <div><label class="block text-xs text-white/60 mb-1">Quick Search</label>
+       <div class="relative"><input type="text" id="search-input" placeholder="Search city..." class="w-full px-3 py-2 pl-9 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/40 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400/50">
+        <svg class="absolute left-3 top-2.5 w-4 h-4 text-white/40" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+       </div>
+      </div>
+     </div>
+    </div>
+   </header><!-- Main Content -->
+   <main class="max-w-7xl mx-auto px-4 py-6"><!-- Welcome State -->
+    <div id="welcome-state" class="glass-card rounded-2xl p-8 text-center slide-in">
+     <div class="w-20 h-20 mx-auto mb-6">
+      <svg class="w-full h-full text-blue-400 weather-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+      </svg>
+     </div>
+     <h2 class="text-2xl font-bold mb-2">Welcome to Real-Time Weather India</h2>
+     <p class="text-white/60 max-w-md mx-auto mb-6">Get live weather updates. Select a state, district, or search for any city to get started.</p><!-- Popular Cities -->
+     <div class="mt-8 pt-6 border-t border-white/10">
+      <p class="text-sm text-white/40 mb-4">Quick Access - Popular Cities</p>
+      <div class="flex flex-wrap justify-center gap-2" id="popular-cities"><button class="city-btn px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-sm transition-colors" data-city="New Delhi" data-lat="28.6139" data-lon="77.2090">🏛️ Delhi</button> <button class="city-btn px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-sm transition-colors" data-city="Mumbai" data-lat="19.0760" data-lon="72.8777">🌊 Mumbai</button> <button class="city-btn px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-sm transition-colors" data-city="Bangalore" data-lat="12.9716" data-lon="77.5946">🏙️ Bangalore</button> <button class="city-btn px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-sm transition-colors" data-city="Chennai" data-lat="13.0827" data-lon="80.2707">🏖️ Chennai</button> <button class="city-btn px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-sm transition-colors" data-city="Kolkata" data-lat="22.5726" data-lon="88.3639">🏛️ Kolkata</button>
+      </div>
+     </div>
+    </div><!-- Loading State -->
+    <div id="loading-state" class="hidden flex flex-col items-center justify-center py-20">
+     <div class="spinner"></div>
+     <p class="mt-4 text-white/60">Fetching live weather data...</p>
+    </div><!-- Error State -->
+    <div id="error-state" class="hidden glass-card rounded-2xl p-8 text-center">
+     <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-red-500/20 flex items-center justify-center">
+      <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      </svg>
+     </div>
+     <h3 class="text-xl font-semibold text-red-400">Unable to Fetch Weather</h3>
+     <p id="error-message" class="mt-2 text-white/60">Please try selecting a different location.</p><button id="retry-btn" class="mt-4 px-6 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 transition-colors text-sm font-semibold"> Try Again </button>
+    </div><!-- Weather Dashboard -->
+    <div id="weather-content" class="hidden space-y-6"><!-- Current Weather Card -->
+     <div class="glass-card rounded-2xl p-6 slide-in">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+       <div class="flex items-center gap-6">
+        <div id="current-weather-icon" class="w-24 h-24 md:w-32 md:h-32 weather-icon text-center">
+         ☀️
+        </div>
+        <div>
+         <div class="flex items-center gap-2 mb-1">
+          <p class="text-white/60 text-sm">Current Weather</p><span class="w-2 h-2 rounded-full bg-green-400"></span>
+         </div>
+         <h2 id="current-location" class="text-2xl md:text-3xl font-bold">--</h2>
+         <p id="current-datetime" class="text-white/60 text-sm mt-1">--</p>
+         <div class="flex items-baseline gap-2 mt-2"><span id="current-temp" class="text-5xl md:text-6xl font-light">--</span> <span class="text-2xl text-white/60">°C</span>
+         </div>
+         <p id="current-condition" class="text-lg text-white/80 mt-1">--</p>
+        </div>
+       </div>
+       <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-3">
+        <div class="glass-card rounded-xl p-4 text-center">
+         <div class="text-white/60 text-xs mb-1">
+          💧 Humidity
+         </div>
+         <p id="current-humidity" class="text-xl font-semibold">--%</p>
+        </div>
+        <div class="glass-card rounded-xl p-4 text-center">
+         <div class="text-white/60 text-xs mb-1">
+          💨 Wind
+         </div>
+         <p id="current-wind" class="text-xl font-semibold">-- km/h</p>
+        </div>
+        <div class="glass-card rounded-xl p-4 text-center">
+         <div class="text-white/60 text-xs mb-1">
+          🔽 Pressure
+         </div>
+         <p id="current-pressure" class="text-xl font-semibold">-- hPa</p>
+        </div>
+        <div class="glass-card rounded-xl p-4 text-center">
+         <div class="text-white/60 text-xs mb-1">
+          👁️ Visibility
+         </div>
+         <p id="current-visibility" class="text-xl font-semibold">-- km</p>
+        </div>
+       </div>
+      </div>
+      <div class="mt-6 pt-6 border-t border-white/10 grid grid-cols-2 sm:grid-cols-5 gap-4 text-center">
+       <div>
+        <p class="text-white/60 text-xs">Feels Like</p>
+        <p id="feels-like" class="text-lg font-semibold">--°C</p>
+       </div>
+       <div>
+        <p class="text-white/60 text-xs">UV Index</p>
+        <p id="uv-index" class="text-lg font-semibold">--</p>
+       </div>
+       <div>
+        <p class="text-white/60 text-xs">Rain Prob</p>
+        <p id="rain-prob" class="text-lg font-semibold">--%</p>
+       </div>
+       <div>
+        <p class="text-white/60 text-xs">Cloud Cover</p>
+        <p id="cloud-cover" class="text-lg font-semibold">--%</p>
+       </div>
+       <div>
+        <p class="text-white/60 text-xs">Last Update</p>
+        <p id="last-update-time" class="text-lg font-semibold">--</p>
+       </div>
+      </div>
+     </div><!-- Hourly Forecast -->
+     <div class="glass-card rounded-2xl p-6 slide-in" style="animation-delay: 0.1s;">
+      <h3 class="text-lg font-semibold mb-4">⏰ Next 24 Hours</h3>
+      <div id="hourly-forecast" class="flex gap-3 overflow-x-auto pb-3 -mx-2 px-2"><!-- Hourly items inserted here -->
+      </div>
+     </div><!-- 7 Day Forecast -->
+     <div class="glass-card rounded-2xl p-6 slide-in" style="animation-delay: 0.2s;">
+      <h3 class="text-lg font-semibold mb-4">📅 7 Day Forecast</h3>
+      <div id="daily-forecast" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-3"><!-- Daily items inserted here -->
+      </div>
+     </div><!-- Sunrise/Sunset & Wind Details -->
+     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="glass-card rounded-2xl p-6 slide-in" style="animation-delay: 0.3s;">
+       <h3 class="text-lg font-semibold mb-4">🌅 Sunrise &amp; Sunset</h3>
+       <div class="flex justify-around items-center">
+        <div class="text-center">
+         <div class="w-16 h-16 mx-auto mb-2 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center">
+          🌅
+         </div>
+         <p class="text-white/60 text-xs">Sunrise</p>
+         <p id="sunrise" class="text-xl font-semibold">--:--</p>
+        </div>
+        <div class="h-16 w-px bg-white/20"></div>
+        <div class="text-center">
+         <div class="w-16 h-16 mx-auto mb-2 rounded-full bg-gradient-to-br from-orange-500 to-purple-600 flex items-center justify-center">
+          🌇
+         </div>
+         <p class="text-white/60 text-xs">Sunset</p>
+         <p id="sunset" class="text-xl font-semibold">--:--</p>
+        </div>
+       </div>
+      </div>
+      <div class="glass-card rounded-2xl p-6 slide-in" style="animation-delay: 0.4s;">
+       <h3 class="text-lg font-semibold mb-4">💨 Wind Details</h3>
+       <div class="space-y-3">
+        <div class="flex justify-between items-center"><span class="text-white/60 text-sm">Speed</span>
+         <p id="wind-speed" class="text-lg font-semibold">-- km/h</p>
+        </div>
+        <div class="flex justify-between items-center"><span class="text-white/60 text-sm">Direction</span>
+         <p id="wind-dir-text" class="text-lg font-semibold">--</p>
+        </div>
+        <div class="flex justify-between items-center"><span class="text-white/60 text-sm">Gusts</span>
+         <p id="wind-gusts" class="text-lg font-semibold">-- km/h</p>
+        </div>
+       </div>
+      </div>
+     </div><!-- Alerts -->
+     <div id="alert-container"></div>
+    </div>
+   </main><!-- Footer -->
+   <footer class="max-w-7xl mx-auto px-4 py-4 border-t border-white/10 text-xs text-white/40">
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-2">
+     <p id="footer-text">Live weather updates every 5 minutes</p>
+     <p>Next auto-update: <span id="next-update-time">--:--</span></p>
+    </div>
+   </footer>
+  </div>
+  <script type="module" src="assets/js/main.js"></script>
+ </body>
+</html>
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Real-time weather forecasting for all Indian states and districts with live updates">
+  <title>Real-Time Weather India</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <script>
+    tailwindcss.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
     }
-    
-    .weather-gradient-light {
-      background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 50%, #ede9fe 100%);
-    }
-    
-    .glass-card {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-    
-    .glass-card-light {
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.9);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    }
-    
-    .glass-card-light .text-white {
-      color: #1e293b;
-    }
-    
-    .glass-card-light .text-white\/60 {
-      color: rgba(30, 41, 59, 0.6);
-    }
-    
-    .glass-card-light .text-blue-400 {
-      color: #0284c7;
-    }
-    
-    .weather-icon {
-      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
-    }
-    
-    .pulse-animation {
-      animation: pulse 2s infinite;
-    }
-    
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-    
-    .slide-in {
-      animation: slideIn 0.5s ease-out;
-    }
-    
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .fade-in {
-      animation: fadeIn 0.3s ease-out;
-    }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    .live-pulse {
-      animation: livePulse 2s infinite;
-    }
-
-    @keyframes livePulse {
-      0% { opacity: 1; }
-      50% { opacity: 0.7; }
-      100% { opacity: 1; }
-    }
-
-    select {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23fff' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 8px center;
-      padding-right: 28px;
-    }
-
-    select option {
-      background: #1e293b;
-      color: #f8fafc;
-    }
-    
-    .light select option {
-      background: #ffffff;
-      color: #1e293b;
-    }
-
-    ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
-    }
-    
-    ::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.1);
-    }
-    
-    ::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.3);
-      border-radius: 4px;
-    }
-    
-    ::-webkit-scrollbar-thumb:hover {
-      background: rgba(255, 255, 255, 0.5);
-    }
-
-    .spinner {
-      border: 4px solid rgba(59, 130, 246, 0.2);
-      border-top-color: #3b82f6;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-  </style>
-  <style>@view-transition { navigation: auto; }</style>
+  </script>
+  <link rel="stylesheet" href="assets/css/styles.css">
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
  </head>
  <body class="h-full font-sans">
